@@ -1,0 +1,43 @@
+{
+ "scripts": {
+  "dev": "vite",
+  "build": "tsc --noEmit && vite build",
+  "build:mobile": "npm run build && npx cap sync",
+  "preview": "vite preview",
+  "typecheck": "tsc --noEmit"
+ },
+ "dependencies": {
+  "@capacitor/android": "^8.2.0",
+  "@capacitor/core": "^8.2.0",
+  "@capacitor/ios": "^8.2.0",
+  "@excalidraw/excalidraw": "^0.18.0",
+  "@fullcalendar/core": "^6.1.20",
+  "@fullcalendar/daygrid": "^6.1.20",
+  "@fullcalendar/google-calendar": "^6.1.20",
+  "@google/generative-ai": "^0.24.1",
+  "@types/d3": "^7.4.3",
+  "@types/fabric": "^5.3.11",
+  "d3": "^7.9.0",
+  "fabric": "^5.5.2",
+  "firebase": "^12.10.0",
+  "firebase-admin": "^13.7.0",
+  "firebase-functions": "^7.1.0",
+  "html2pdf.js": "^0.14.0",
+  "pdfjs-dist": "^5.5.207",
+  "react": "^19.2.4",
+  "react-dom": "^19.2.4",
+  "zustand": "^5.0.12"
+ },
+ "devDependencies": {
+  "@capacitor/cli": "^8.2.0",
+  "@types/node": "^22.14.0",
+  "@types/react": "^19.2.14",
+  "@types/react-dom": "^19.2.3",
+  "@vitejs/plugin-react": "^6.0.1",
+  "typescript": "^5.8.2",
+  "vite": "^8.0.0"
+ },
+ "engines": {
+  "node": ">=20"
+ }
+}
