@@ -1,7 +1,11 @@
 {
   "compilerOptions": {
     "target": "ES2020",
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "lib": [
+      "ES2020",
+      "DOM",
+      "DOM.Iterable"
+    ],
     "module": "ESNext",
     "moduleResolution": "bundler",
     "strict": true,
@@ -17,6 +21,13 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["ts/**/*.ts", ".env.d.ts"],
-  "exclude": ["node_modules", "js"]
+  "include": [
+    "ts/**/*.ts",
+    ".env.d.ts",
+    "ts/ui/Theme.tsx"
+  ],
+  "exclude": [
+    "node_modules",
+    "js"
+  ]
 }
