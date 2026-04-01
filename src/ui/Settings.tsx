@@ -26,7 +26,8 @@ export default function Settings() {
   const currentUser = useAppStore(state => state.currentUser);
   const hub = useAppStore(state => state.hub);
 
-  const [isOpen, setIsOpen] = useState(false);
+  const isSettingsOpen = useAppStore(state => state.isSettingsOpen);
+  const setSettingsOpen = useAppStore(state => state.setSettingsOpen);
   const [activeTab, setActiveTab] = useState<SettingsTab>('appearance');
   const [theme, setTheme] = useState(localStorage.getItem('hub-theme') || 'dark');
   const [accent, setAccent] = useState(localStorage.getItem('hub-accent') || '#c8903a');
@@ -45,21 +46,7 @@ export default function Settings() {
     }
   }, []);
 
-  // Settings button → open settings
-  useEffect(() => {
-    const openSettings = () => { setActiveTab('appearance'); setIsOpen(true); };
-    const btn = document.getElementById('btn-settings');
-    btn?.addEventListener('click', openSettings);
-    return () => btn?.removeEventListener('click', openSettings);
-  }, []);
-
-  // Help button → open shortcuts tab
-  useEffect(() => {
-    const openHelp = () => { setActiveTab('shortcuts'); setIsOpen(true); };
-    const btn = document.getElementById('btn-help');
-    btn?.addEventListener('click', openHelp);
-    return () => btn?.removeEventListener('click', openHelp);
-  }, []);
+  // Removed direct DOM event listeners; Nav click handler manages visibility now.
 
   const applyTheme = (name: string) => {
     const r = document.documentElement;
@@ -124,12 +111,12 @@ export default function Settings() {
     }
   };
 
-  if (!isOpen) return null;
+  if (!isSettingsOpen) return null;
 
   const noteCount = hub.folders.reduce((a, f) => a + f.notes.length, 0);
 
   return (
-    <div className="settings-overlay open" onClick={() => setIsOpen(false)}>
+    <div className="settings-overlay open" onClick={() => setSettingsOpen(false)}>
       <div className="settings-panel" onClick={e => e.stopPropagation()}>
 
         {/* Header */}
@@ -138,7 +125,7 @@ export default function Settings() {
             <Icon name="settings" size={16} />
             <span>Settings</span>
           </div>
-          <div className="settings-close" onClick={() => setIsOpen(false)}>
+          <div className="settings-close" onClick={() => setSettingsOpen(false)}>
             <Icon name="close" size={14} />
           </div>
         </div>
@@ -147,7 +134,7 @@ export default function Settings() {
 
           {/* Sidebar nav */}
           <nav className="settings-nav">
-            {NAV_ITEMS.map(item => (
+            {NAV_ITEMS.filter(item => currentUser || item.tab !== 'account').map(item => (
               <React.Fragment key={item.tab}>
                 {item.section && <div className="settings-nav-section-label">{item.section}</div>}
                 <div
@@ -207,7 +194,7 @@ export default function Settings() {
                   <div className="settings-group-label">Font Size</div>
                   <div className="slider-row">
                     <span className="slider-label">11px</span>
-                    <input type="range" className="settings-slider" min={11} max={18} value={fontSize}
+                    <input type="range" className="global-slider" min={11} max={18} value={fontSize}
                       onChange={e => handleFontSize(e.target.value)} />
                     <span className="slider-label">18px</span>
                     <span className="slider-value">{fontSize}px</span>

@@ -1,6 +1,6 @@
 /* ── CALENDAR VIEW ─────────────────────────────────────────────────────────── */
 #calendar-slot {
-  display: none;
+  display: flex;
   position: fixed;
   inset: 0;
   left: 44px; /* nav width */
@@ -526,3 +526,13 @@ html[data-theme="light"] #calendar-view { background: var(--bg-base, #f5f2ee); }
 html[data-theme="light"] .fc .fc-daygrid-day-number { color: var(--text-mid, #7a6e60); }
 html[data-theme="light"] .fc .fc-col-header-cell-cushion { color: var(--text-mid, #7a6e60); }
 html[data-theme="light"] .fc .fc-day-today .fc-daygrid-day-number { color: #f5f2ee !important; }
+
+@media (max-width: 768px) {
+  #calendar-slot {
+    left: 0;
+    bottom: 60px;
+  }
+  .cal-title { 
+    min-width: unset; 
+  }
+}

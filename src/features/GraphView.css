@@ -16,28 +16,23 @@
   height: 100%;
 }
 
-/* ── Controls bar ── */
 #graph-controls {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 8px 16px;
+  padding: 0 16px;
+  height: 46px;
   background: var(--bg-sidebar);
   border-bottom: 1px solid var(--border);
   flex-shrink: 0;
-  flex-wrap: wrap;
+  overflow-x: auto;
+  overflow-y: hidden;
 }
 
 .graph-ctrl-group {
   display: flex;
   align-items: center;
   gap: 8px;
-}
-
-#graph-controls input[type=range] {
-  width: 64px;
-  accent-color: var(--accent);
-  cursor: pointer;
 }
 
 .ctrl-label {
@@ -180,35 +175,8 @@
 }
 
 /* ── In-graph search ── */
-#graph-search-wrap {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  background: var(--bg-sidebar);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 5px 10px;
-  transition: border-color 0.15s;
+@media (max-width: 768px) {
+  #graph-slot {
+    inset: 0 0 60px 0;
+  }
 }
-#graph-search-wrap:focus-within {
-  border-color: var(--accent);
-}
-#graph-search-wrap svg,
-#graph-search-wrap i {
-  width: 13px;
-  height: 13px;
-  flex-shrink: 0;
-  pointer-events: none;
-}
-
-#graph-search {
-  background: none;
-  border: none;
-  outline: none;
-  color: var(--text-main);
-  font-family: inherit;
-  font-size: 0.76rem;
-  width: 150px;
-}
-#graph-search::placeholder { color: var(--text-dim); }

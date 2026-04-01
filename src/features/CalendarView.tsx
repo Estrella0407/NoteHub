@@ -109,7 +109,7 @@ export default function CalendarView() {
   const btnStyle: React.CSSProperties = { background: 'none', border: '1px solid var(--border)', color: 'var(--text-main)', padding: '4px 12px', borderRadius: '4px', cursor: 'pointer' };
 
   return (
-    <div id="calendar-slot" style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', background: 'var(--bg-base)' }}>
+    <div id="calendar-slot">
       <div style={{ display: 'flex', alignItems: 'center', padding: '8px 16px', gap: '8px', borderBottom: '1px solid var(--border)' }}>
         <button onClick={() => setPanel('files')} style={btnStyle}>← Back</button>
         <button onClick={() => fcRef.current?.prev()} style={btnStyle}>‹</button>

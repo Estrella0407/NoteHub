@@ -8,6 +8,7 @@ interface AppState {
   currentPanel: 'files' | 'search' | 'graph' | 'calendar' | 'canvas' | 'ai' | 'tags';
   isMobileMenuOpen: boolean;
   openTabs: Tab[];
+  isSettingsOpen: boolean;
 
   renamingFileId: string | null;
   modal: { isOpen: boolean; title: string; message: string; placeholder: string; showInput: boolean; onConfirm?: (value: string) => void };
@@ -18,10 +19,12 @@ interface AppState {
   setActiveFile: (id: string | null) => void;
   setPanel: (panel: string) => void;
   toggleMobileMenu: () => void;
+  setMobileMenuOpen: (isOpen: boolean) => void;
   setRenamingFileId: (id: string | null) => void;
   setOpenTabs: (tabs: Tab[]) => void;
   openModal: (cfg: { title: string; message?: string; placeholder?: string; showInput?: boolean; onConfirm: (value: string) => void }) => void;
   closeModal: () => void;
+  setSettingsOpen: (isOpen: boolean) => void;
   openContextMenu: (x: number, y: number, nid: string, fid: string) => void;
   closeContextMenu: () => void;
   pickerFolderId: string | null;
@@ -35,6 +38,7 @@ export const useAppStore = create<AppState>((set) => ({
   activeFileId: null,
   currentPanel: 'files',
   isMobileMenuOpen: false,
+  isSettingsOpen: false,
   openTabs: [],
   renamingFileId: null,
   modal: { isOpen: false, title: '', message: '', placeholder: '', showInput: false },
@@ -58,10 +62,12 @@ export const useAppStore = create<AppState>((set) => ({
   }),
   setPanel: (panel) => set({ currentPanel: panel as any }),
   toggleMobileMenu: () => set((state) => ({ isMobileMenuOpen: !state.isMobileMenuOpen })),
+  setMobileMenuOpen: (isOpen) => set({ isMobileMenuOpen: isOpen }),
   setRenamingFileId: (id) => set({ renamingFileId: id }),
   setOpenTabs: (tabs) => set({ openTabs: tabs }),
   openModal: (cfg) => set({ modal: { isOpen: true, title: cfg.title, message: cfg.message || '', placeholder: cfg.placeholder || '', showInput: cfg.showInput !== false, onConfirm: cfg.onConfirm } }),
   closeModal: () => set((state) => ({ modal: { ...state.modal, isOpen: false } })),
+  setSettingsOpen: (isOpen) => set({ isSettingsOpen: isOpen }),
   openContextMenu: (x, y, nid, fid) => set({ contextMenu: { isOpen: true, x, y, nid, fid } }),
   closeContextMenu: () => set((state) => ({ contextMenu: { ...state.contextMenu, isOpen: false } })),
   openPicker: (fid) => set({ pickerFolderId: fid }),

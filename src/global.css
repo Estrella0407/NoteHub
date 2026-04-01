@@ -24,6 +24,56 @@
   --transition:  180ms ease;
 }
 
+/* ── GLOBAL REUSABLE UI ── */
+.global-search-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-hover);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 4px 10px;
+  height: 28px;
+  transition: border-color var(--transition);
+}
+.global-search-wrap:focus-within {
+  border-color: var(--accent);
+}
+.global-input {
+  background: none;
+  border: none;
+  outline: none;
+  color: var(--text-main);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  width: 100%;
+}
+.global-input::placeholder { color: var(--text-dim); }
+
+.global-slider {
+  height: 4px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: var(--border);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+.global-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  border: 2px solid var(--bg-base);
+  transition: transform 150ms;
+}
+.global-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 .app-root {
@@ -114,8 +164,9 @@ html, body { height: 100%; overflow: hidden; }
   }
 
   .explorer-header {
-    padding: 14px 14px 10px;
-    border-bottom: 1px solid var(--border-soft);
+    padding: 0 16px;
+    height: 46px;
+    border-bottom: 1px solid var(--border);
     display: flex; align-items: center; justify-content: space-between;
   }
   .explorer-title {
@@ -133,24 +184,10 @@ html, body { height: 100%; overflow: hidden; }
   .icon-btn:hover { color: var(--text-main); background: var(--bg-hover); }
   .icon-btn svg { width: 14px; height: 14px; stroke-width: 1.8; }
 
-  #search-wrap {
+  .explorer-search-area {
     padding: 8px 10px;
     border-bottom: 1px solid var(--border-soft);
   }
-  #search {
-    width: 100%;
-    background: var(--bg-hover);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 5px 9px;
-    color: var(--text-main);
-    font-family: var(--font-mono);
-    font-size: 12px;
-    outline: none;
-    transition: border-color var(--transition);
-  }
-  #search::placeholder { color: var(--text-dim); }
-  #search:focus { border-color: var(--accent-dim); }
 
   #file-tree {
     flex: 1; overflow-y: auto; padding: 6px 0;
@@ -497,55 +534,61 @@ html, body { height: 100%; overflow: hidden; }
   }
 
   @media (max-width: 768px) {
-    /* Show hamburger menu */
+    /* Hide the floating hamburger button */
     .mobile-only-btn {
-      display: flex;
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      z-index: 2000;
-      width: 48px;
-      height: 48px;
-      border-radius: 24px;
-      background: var(--accent);
-      color: var(--bg-base);
-      align-items: center;
-      justify-content: center;
-      border: none;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-      cursor: pointer;
+      display: none !important;
     }
 
-    .mobile-only-btn svg {
-      width: 24px;
-      height: 24px;
-    }
-
-    /* Slide-out Sidebar & Nav */
+    /* Bottom Navigation Bar */
     #nav {
-      position: absolute;
-      height: 100%;
-      z-index: 1000;
-      transform: translateX(-100%);
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100vw;
+      height: 60px;
+      flex-direction: row;
+      justify-content: space-around;
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding: 0 10px;
+      padding-bottom: env(safe-area-inset-bottom, 0); /* iOS safe area */
+      z-index: 2000;
+      border-right: none;
+      border-top: 1px solid var(--border-soft);
+      transform: none !important; /* Persistent */
     }
 
-    #explorer {
-      position: absolute;
-      left: var(--nav-w);
+    .nav-logo, .nav-spacer {
+      display: none;
+    }
+
+    .nav-btn {
+      width: 48px;
       height: 100%;
-      z-index: 999;
-      transform: translateX(calc(-100% - var(--nav-w)));
+    }
+
+    .nav-tooltip {
+      display: none !important;
+    }
+
+    /* File Explorer Overlay */
+    #explorer, #tags-panel {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: calc(100dvh - 60px);
+      z-index: 1000;
+      transform: translateY(100%);
       transition: transform var(--transition);
-      box-shadow: 4px 0 24px rgba(0,0,0,0.5);
+      box-shadow: 0 -4px 24px rgba(0,0,0,0.5);
+      background: var(--bg-explorer);
     }
 
     /* When toggled open via TS logic */
-    body.mobile-menu-open #nav {
-      transform: translateX(0);
-    }
-    
-    body.mobile-menu-open #explorer {
-      transform: translateX(0);
+    .app-root.mobile-menu-open #explorer, 
+    .app-root.mobile-menu-open #tags-panel {
+      transform: translateY(0);
     }
 
     /* Adjust Editor Margins */
@@ -555,7 +598,11 @@ html, body { height: 100%; overflow: hidden; }
     }
 
     #note-body {
-      padding-bottom: 80px; /* Space for the floating toggle button */
+      padding-bottom: 30px; 
+    }
+
+    #editor-area {
+      padding-bottom: 60px; /* Space for bottom nav */
     }
 
     /* Make Modals Full Width */
@@ -564,7 +611,6 @@ html, body { height: 100%; overflow: hidden; }
       min-width: unset;
       margin: 0 16px;
       padding: 20px;
-      
     }
     
     .modal-btns {

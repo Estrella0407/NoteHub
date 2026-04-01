@@ -21,6 +21,7 @@ export interface Folder {
 
 export interface Hub {
   folders: Folder[];
+  tags?: string[];
 }
 
 export interface Tab {

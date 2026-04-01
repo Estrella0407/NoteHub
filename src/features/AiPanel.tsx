@@ -10,7 +10,7 @@ import type { Note } from '../types/index';
 import { Icon } from '../ui/Icons';
 
 const CLOUD_FUNCTION_URL = 'https://cloudflare-ai.wxchong2480.workers.dev';
-type AiMode = 'note' | 'canvas' | 'mermaid';
+type AiMode = 'note' | 'canvas';
 
 interface ChatBubble {
   id: number;
@@ -51,7 +51,6 @@ export default function AiPanel() {
   const placeholders: Record<AiMode, string> = {
     note: 'Describe a note to create…',
     canvas: 'Describe a diagram to draw…',
-    mermaid: 'Describe a chart…',
   };
 
   const handleSubmit = async () => {
@@ -92,9 +91,6 @@ export default function AiPanel() {
     if (m === 'note' && data.markdown) {
       setLoadingText('Writing note');
       await createNoteFromAI(data, fid);
-    } else if (m === 'mermaid' && data.mermaid) {
-      setLoadingText('Building diagram');
-      await createMermaidNoteFromAI(data, fid);
     } else if (m === 'canvas' && data.fabricObjects) {
       setLoadingText('Drawing canvas');
       await createCanvasFromAI(data, fid);
@@ -119,22 +115,7 @@ export default function AiPanel() {
     addBubble('ai', `Created note "${title}"`, { label: 'Open note', noteId: id });
   };
 
-  const createMermaidNoteFromAI = async (data: any, fid: string) => {
-    const title = data.title || 'AI Diagram';
-    const id = 'n' + Date.now() + Math.random().toString(36).slice(2, 8);
-    const body = `# ${title}\n\n\`\`\`mermaid\n${data.mermaid.trim()}\n\`\`\`\n`;
-    const newHub = JSON.parse(JSON.stringify(hub));
-    const folder = newHub.folders.find((f: any) => f.id === fid);
-    if (!folder) return;
-    const note: Note = { id, type: 'note', title, body, created: new Date().toISOString(), tags: ['ai-generated', 'diagram'] };
-    folder.notes.unshift(note);
-    folder.open = true;
-    setHub(newHub);
-    saveHub();
-    setActiveFile(id);
-    setPanel('files');
-    addBubble('ai', `Created diagram "${title}"`, { label: 'Open diagram', noteId: id });
-  };
+
 
   const createCanvasFromAI = async (data: any, fid: string) => {
     const title = data.title || 'AI Canvas';
@@ -215,12 +196,11 @@ export default function AiPanel() {
 
       {/* Mode bar */}
       <div id="ai-mode-bar">
-        {(['note', 'canvas', 'mermaid'] as AiMode[]).map(m => (
+        {(['note', 'canvas'] as AiMode[]).map(m => (
           <button key={m} className={`ai-mode-btn ${mode === m ? 'active' : ''}`} onClick={() => setMode(m)}>
             {m === 'note' && <Icon name="note" size={16} />}
             {m === 'canvas' && <Icon name="canvas" size={16} />}
-            {m === 'mermaid' && <Icon name="mermaid" size={11} />}
-            {m === 'mermaid' ? 'Diagram' : m.charAt(0).toUpperCase() + m.slice(1)}
+            {m.charAt(0).toUpperCase() + m.slice(1)}
           </button>
         ))}
       </div>

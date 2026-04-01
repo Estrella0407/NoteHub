@@ -101,14 +101,17 @@ export default function FileExplorer() {
           </div>
         </div>
 
-        <div id="search-wrap">
-          <input
-            id="search"
-            type="text"
-            placeholder="Search notes..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
+        <div className="explorer-search-area">
+          <div className="global-search-wrap">
+            <Icon name="search" size={13} />
+            <input
+              className="global-input"
+              type="text"
+              placeholder="Search notes..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
         </div>
 
         <div id="file-tree">
@@ -143,6 +146,9 @@ export default function FileExplorer() {
                           onClick={() => {
                             if (!isRenaming) {
                               useAppStore.getState().setActiveFile(note.id);
+                              if (window.innerWidth <= 768) {
+                                useAppStore.getState().setMobileMenuOpen(false);
+                              }
                             }
                           }}
                           onContextMenu={(e) => handleContextMenu(e, note.id, folder.id)}

@@ -210,32 +210,27 @@ export default function GraphView() {
             <span className="ctrl-label">Distance</span>
             <input
               type="range"
+              className="global-slider"
               id="ctrl-distance"
               min={60} max={300}
               value={distance}
               onChange={e => setDistance(+e.target.value)}
+              style={{ width: '64px' }}
             />
           </div>
 
           <div className="ctrl-sep" />
 
-          <div id="graph-search-wrap">
+          <div className="global-search-wrap" style={{ width: '400px'}}>
             <Icon name="search" size={13} />
             <input
-              id="graph-search"
+              className="global-input"
               type="text"
               placeholder="Find node or tag…"
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
             />
           </div>
-
-          <div style={{ flex: 1 }} />
-
-          <button className="graph-close-btn" onClick={() => setPanel('files')} title="Close graph view">
-            <Icon name="close" size={13} />
-            Close
-          </button>
         </div>
 
         {/* ── SVG canvas + tooltip + legend ── */}

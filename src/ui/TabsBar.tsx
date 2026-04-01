@@ -27,7 +27,7 @@ export default function TabsBar() {
   if (!openTabs.length) return null;
 
   return (
-    <div id="tabs-bar" style={{ display: 'flex', overflowX: 'auto', borderBottom: '1px solid var(--border)', minHeight: '32px' }}>
+    <div id="tabs-bar" style={{ display: 'flex', overflowX: 'auto', borderBottom: '1px solid var(--border)', minHeight: '46px' }}>
       {openTabs.map(tab => {
         const note = findNote(tab.id);
         if (!note) return null;
