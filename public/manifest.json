@@ -4,13 +4,24 @@
   "description": "Your Second Brain",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0f0e0d",
-  "theme_color": "#181614",
+  "background_color": "#1e1e2e",
+  "theme_color": "#1e1e2e",
   "icons": [
     {
-      "src": "/favicon.ico",
+      "src": "/icon-dark.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-dark.svg",
       "sizes": "192x192",
-      "type": "image/x-icon"
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/icon-dark.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
     }
   ]
 }

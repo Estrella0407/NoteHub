@@ -7,7 +7,7 @@ declare const FullCalendar: any;
 interface CalEvent {
   id: string; title: string; start: string | null;
   end?: string | null; backgroundColor?: string; borderColor?: string;
-  extendedProps?: { description?: string; source?: string };
+  extendedProps?: { description?: string; source?: string; linkedNoteId?: string };
 }
 
 const CORS_PROXY = 'https://corsproxy.io/?';
@@ -19,6 +19,9 @@ function calSave(ev: CalEvent[]): void { try { localStorage.setItem('hub-cal-eve
 export default function CalendarView() {
   const containerRef = useRef<HTMLDivElement>(null);
   const setPanel = useAppStore(state => state.setPanel);
+  const hub = useAppStore(state => state.hub);
+  const setActiveFile = useAppStore(state => state.setActiveFile);
+  const allNotes = hub.folders.flatMap(f => f.notes);
   const fcRef = useRef<any>(null);
   const [calTitle, setCalTitle] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
@@ -28,6 +31,7 @@ export default function CalendarView() {
   const [evEnd, setEvEnd] = useState('');
   const [evDesc, setEvDesc] = useState('');
   const [evColor, setEvColor] = useState('#7ee8a2');
+  const [evLinkedNoteId, setEvLinkedNoteId] = useState('');
 
   useEffect(() => {
     if (!containerRef.current || typeof FullCalendar === 'undefined') return;
@@ -51,7 +55,7 @@ export default function CalendarView() {
       },
       datesSet(i: any) { setCalTitle(i.view.title); },
       dateClick(i: any) {
-        setEditingId(null); setEvTitle(''); setEvDesc(''); setEvColor('#7ee8a2');
+        setEditingId(null); setEvTitle(''); setEvDesc(''); setEvColor('#7ee8a2'); setEvLinkedNoteId('');
         setEvStart(i.dateStr + 'T09:00'); setEvEnd(i.dateStr + 'T10:00');
         setModalOpen(true);
       },
@@ -63,6 +67,7 @@ export default function CalendarView() {
         const fmt = (dt: Date | null) => { if (!dt) return ''; const d = new Date(dt); const p = (n: number) => String(n).padStart(2, '0'); return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()) + 'T' + p(d.getHours()) + ':' + p(d.getMinutes()); };
         setEvStart(fmt(ev.start)); setEvEnd(fmt(ev.end || ev.start));
         setEvDesc(ev.extendedProps?.description || '');
+        setEvLinkedNoteId(ev.extendedProps?.linkedNoteId || '');
         setModalOpen(true);
       },
       eventDrop(i: any) { persistEvent(i.event); },
@@ -89,10 +94,10 @@ export default function CalendarView() {
     const evs = calLoad();
     if (editingId) {
       const i = evs.findIndex(e => e.id === editingId);
-      if (i !== -1) evs[i] = { ...evs[i], title, start: evStart, end: evEnd || evStart, backgroundColor: evColor, borderColor: evColor, extendedProps: { description: evDesc } };
+      if (i !== -1) evs[i] = { ...evs[i], title, start: evStart, end: evEnd || evStart, backgroundColor: evColor, borderColor: evColor, extendedProps: { description: evDesc, linkedNoteId: evLinkedNoteId } };
     } else {
       const id = 'ev_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7);
-      evs.push({ id, title, start: evStart, end: evEnd || evStart, backgroundColor: evColor, borderColor: evColor, extendedProps: { description: evDesc } });
+      evs.push({ id, title, start: evStart, end: evEnd || evStart, backgroundColor: evColor, borderColor: evColor, extendedProps: { description: evDesc, linkedNoteId: evLinkedNoteId } });
     }
     calSave(evs);
     fcRef.current?.refetchEvents();
@@ -116,7 +121,7 @@ export default function CalendarView() {
         <button onClick={() => fcRef.current?.today()} style={btnStyle}>Today</button>
         <button onClick={() => fcRef.current?.next()} style={btnStyle}>›</button>
         <span style={{ fontSize: '16px', fontWeight: 500, color: 'var(--text-bright)', marginLeft: '8px' }}>{calTitle}</span>
-        <button onClick={() => { setEditingId(null); setEvTitle(''); setEvDesc(''); setEvColor('#7ee8a2'); setEvStart(''); setEvEnd(''); setModalOpen(true); }} style={{ ...btnStyle, marginLeft: 'auto', background: 'var(--accent)', color: 'white', border: 'none' }}>+ Event</button>
+        <button onClick={() => { setEditingId(null); setEvTitle(''); setEvDesc(''); setEvColor('#7ee8a2'); setEvStart(''); setEvEnd(''); setEvLinkedNoteId(''); setModalOpen(true); }} style={{ ...btnStyle, marginLeft: 'auto', background: 'var(--accent)', color: 'white', border: 'none' }}>+ Event</button>
       </div>
       <div ref={containerRef} id="fc-root" style={{ flex: 1 }} />
 
@@ -129,12 +134,17 @@ export default function CalendarView() {
             <input type="datetime-local" value={evStart} onChange={e => setEvStart(e.target.value)} style={{ width: '100%', padding: '8px', marginBottom: '8px', background: 'var(--bg-dark)', border: '1px solid var(--border)', borderRadius: '6px', color: 'var(--text-main)' }} />
             <input type="datetime-local" value={evEnd} onChange={e => setEvEnd(e.target.value)} style={{ width: '100%', padding: '8px', marginBottom: '8px', background: 'var(--bg-dark)', border: '1px solid var(--border)', borderRadius: '6px', color: 'var(--text-main)' }} />
             <textarea value={evDesc} onChange={e => setEvDesc(e.target.value)} placeholder="Description" rows={2} style={{ width: '100%', padding: '8px', marginBottom: '8px', background: 'var(--bg-dark)', border: '1px solid var(--border)', borderRadius: '6px', color: 'var(--text-main)', resize: 'none' }} />
+            <select value={evLinkedNoteId} onChange={e => setEvLinkedNoteId(e.target.value)} style={{ width: '100%', padding: '8px', marginBottom: '8px', background: 'var(--bg-dark)', border: '1px solid var(--border)', borderRadius: '6px', color: 'var(--text-main)', outline: 'none' }}>
+              <option value="">No linked note</option>
+              {allNotes.map(n => <option key={n.id} value={n.id}>{n.title}</option>)}
+            </select>
             <div style={{ display: 'flex', gap: '6px', marginBottom: '16px' }}>
               {COLORS.map(c => (
                 <div key={c} onClick={() => setEvColor(c)} style={{ width: 24, height: 24, borderRadius: '50%', background: c, cursor: 'pointer', border: evColor === c ? '2px solid var(--text-bright)' : '2px solid transparent' }} />
               ))}
             </div>
             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
+              {evLinkedNoteId && <button onClick={() => { setModalOpen(false); setActiveFile(evLinkedNoteId); }} style={{ ...btnStyle, color: 'var(--text-main)', borderColor: 'var(--border)', marginRight: 'auto' }}>Open Note</button>}
               {editingId && <button onClick={deleteEvent} style={{ ...btnStyle, color: 'var(--danger, #f7768e)', borderColor: 'var(--danger, #f7768e)' }}>Delete</button>}
               <button onClick={() => setModalOpen(false)} style={btnStyle}>Cancel</button>
               <button onClick={saveEvent} style={{ ...btnStyle, background: 'var(--accent)', color: 'white', border: 'none' }}>Save</button>

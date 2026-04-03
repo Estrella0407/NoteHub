@@ -36,6 +36,8 @@ export default function Settings() {
   const [profileEmail, setProfileEmail] = useState('');
   const [icalUrl, setIcalUrl] = useState(localStorage.getItem('hub-ical-url') || '');
   const [icalEnabled, setIcalEnabled] = useState(localStorage.getItem('hub-ical-enabled') === 'true');
+  const [notifsGranted, setNotifsGranted] = useState(typeof Notification !== 'undefined' && Notification.permission === 'granted');
+  const [notifsEnabled, setNotifsEnabled] = useState(localStorage.getItem('hub-notifs-enabled') === 'true');
 
   useEffect(() => {
     const profile = localStorage.getItem('hub-profile');
@@ -87,6 +89,32 @@ export default function Settings() {
   const saveIcal = () => {
     localStorage.setItem('hub-ical-url', icalEnabled ? icalUrl : '');
     localStorage.setItem('hub-ical-enabled', icalEnabled ? 'true' : 'false');
+  };
+
+  const toggleNotifs = (enabled: boolean) => {
+    if (enabled) {
+      if (typeof Notification === 'undefined') {
+        alert('Desktop notifications are not supported by your browser.');
+        return;
+      }
+      if (Notification.permission !== 'granted') {
+        Notification.requestPermission().then(p => {
+          setNotifsGranted(p === 'granted');
+          if (p === 'granted') {
+            setNotifsEnabled(true);
+            localStorage.setItem('hub-notifs-enabled', 'true');
+          } else {
+            alert('Notifications were blocked. Please enable them in your browser settings.');
+          }
+        });
+        return;
+      }
+      setNotifsEnabled(true);
+      localStorage.setItem('hub-notifs-enabled', 'true');
+    } else {
+      setNotifsEnabled(false);
+      localStorage.setItem('hub-notifs-enabled', 'false');
+    }
   };
 
   const exportHub = (format: string) => {
@@ -276,6 +304,28 @@ export default function Settings() {
             {activeTab === 'calendar' && (
               <div className="settings-tab active">
                 <div className="settings-tab-title">Calendar</div>
+
+                <div className="settings-group">
+                  <div className="settings-group-label">Event Reminders</div>
+                  <div className="settings-row">
+                    <div className="settings-row-info">
+                      <div className="settings-row-label">Desktop Notifications</div>
+                      <div className="settings-row-desc">Get a system notification 10 minutes before an event starts</div>
+                    </div>
+                    <label className="toggle">
+                      <input type="checkbox" checked={notifsEnabled} onChange={e => toggleNotifs(e.target.checked)} />
+                      <span className="toggle-track"><span className="toggle-thumb" /></span>
+                    </label>
+                  </div>
+                  {notifsEnabled && !notifsGranted && (
+                    <div className="settings-row">
+                      <div className="settings-row-info">
+                        <div className="settings-row-desc" style={{ color: 'var(--red)' }}>Browser notification permission is required. Click the toggle again to request permission.</div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
                 <div className="settings-group">
                   <div className="settings-group-label">Google Calendar — iCal Feed</div>
                   <div className="settings-row">

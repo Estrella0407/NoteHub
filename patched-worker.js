@@ -11,22 +11,18 @@ const SYSTEM_PROMPTS = {
 Return ONLY valid JSON, no markdown fences, no explanation:
 { "title": "short title", "markdown": "full markdown content" }`,
 
-  canvas: `You are a visual architect. Convert the user's request into Fabric.js canvas objects.
+  canvas: `You are a visual architect. Convert the user's request into Excalidraw canvas elements.
 Return ONLY valid JSON, no markdown fences, no explanation:
 {
   "title": "short title",
-  "fabricObjects": [
-    { "type": "rect",    "left": 100, "top": 80,  "width": 140, "height": 50, "fill": "transparent", "stroke": "#c8903a", "strokeWidth": 2, "rx": 6 },
-    { "type": "textbox", "left": 110, "top": 95,  "width": 120, "text": "Label", "fontSize": 13, "fill": "#cec5b8" },
-    { "type": "line",    "coords": [240, 105, 350, 105], "stroke": "#5a5248", "strokeWidth": 2 }
+  "elements": [
+    { "type": "rectangle", "x": 100, "y": 80, "width": 140, "height": 50, "strokeColor": "#c8903a", "backgroundColor": "transparent", "fillStyle": "solid", "strokeWidth": 2, "roughness": 1, "roundness": { "type": 3 } },
+    { "type": "text", "x": 110, "y": 95, "text": "Label", "fontSize": 20, "fontFamily": 1, "strokeColor": "#cec5b8" },
+    { "type": "arrow", "x": 240, "y": 105, "points": [[0,0], [110,0]], "strokeColor": "#5a5248", "strokeWidth": 2 }
   ]
 }
-Rules: spread across 800x500px, pair every shape with a textbox label, use line with coords[] for connectors, max 20 objects.`,
+Rules: spread across 800x500px, pair every shape with a text label, use arrow with points[] for connectors, max 20 objects. Use roughness 1 or 2.`,
 
-  mermaid: `You are a diagram architect. Convert the user's request into a Mermaid.js diagram.
-Return ONLY valid JSON, no markdown fences, no explanation:
-{ "title": "short title", "mermaid": "graph TD\\n  A[Start] --> B[End]" }
-Rules: valid Mermaid syntax only, escape newlines as \\n in the JSON string.`,
 };
 
 function makeResponse(data, status) {
@@ -99,7 +95,7 @@ export default {
 
     if (!prompt) return makeResponse({ error: 'Missing prompt' }, 400);
 
-    const safeMode = ['note', 'canvas', 'mermaid'].includes(mode) ? mode : 'note';
+    const safeMode = ['note', 'canvas'].includes(mode) ? mode : 'note';
 
     if (!env.AI) {
       return makeResponse({ error: 'AI binding not configured' }, 500);

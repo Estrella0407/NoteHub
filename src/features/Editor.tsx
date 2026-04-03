@@ -12,6 +12,7 @@ export default function Editor() {
   const setHub = useAppStore(state => state.setHub);
   const activeFileId = useAppStore(state => state.activeFileId);
   const currentUser = useAppStore(state => state.currentUser);
+  const setPanel = useAppStore(state => state.setPanel);
 
   const [activeAccents, setActiveAccents] = useState(DEFAULT_ACCENTS);
 
@@ -37,6 +38,22 @@ export default function Editor() {
 
   const [title, setTitle] = useState(activeNote?.title || '');
   const [body, setBody] = useState(activeNote?.body || '');
+
+  let linkedEventInfo = null;
+  if (activeFileId) {
+    try {
+      const evs = JSON.parse(localStorage.getItem('hub-cal-events') || '[]');
+      const linked = evs.find((e: any) => e.extendedProps?.linkedNoteId === activeFileId);
+      if (linked) {
+        const d = new Date(linked.start);
+        linkedEventInfo = { 
+          title: linked.title, 
+          date: d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+          color: linked.backgroundColor || 'var(--text-mid)'
+        };
+      }
+    } catch {}
+  }
 
   // Sync when active file changes
   useEffect(() => {
@@ -224,7 +241,7 @@ export default function Editor() {
       </div>
 
       {/* Title */}
-      <div id="note-title-wrap" style={{ padding: '16px 24px 0' }}>
+      <div id="note-title-wrap" style={{ padding: '16px 24px 8px' }}>
         <input
           id="note-title"
           type="text"
@@ -236,8 +253,22 @@ export default function Editor() {
       </div>
 
       {/* Meta */}
-      <div id="note-meta" style={{ padding: '4px 24px', fontSize: '12px', color: 'var(--text-dim)' }}>
-        <span id="meta-date">{dateStr}</span> · <span id="meta-words">{wordCount} word{wordCount !== 1 ? 's' : ''}</span>
+      <div id="note-meta" style={{ padding: '8px 24px 8px', fontSize: '12px', color: 'var(--text-dim)', display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+        <span>
+          <span id="meta-date">{dateStr}</span> · <span id="meta-words">{wordCount} word{wordCount !== 1 ? 's' : ''}</span>
+        </span>
+        <div style={{ flex: 1 }} />
+        {linkedEventInfo && (
+          <span 
+            onClick={() => setPanel('calendar')}
+            title="View event in Calendar"
+            style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '3px 8px', borderRadius: '5px', fontSize: '11px', color: linkedEventInfo.color, background: 'var(--bg-editor)', border: '1px solid var(--border)', cursor: 'pointer', transition: 'all 0.15s' }}
+            onMouseOver={(e) => { e.currentTarget.style.borderColor = linkedEventInfo.color; e.currentTarget.style.color = 'var(--text-bright)'; }}
+            onMouseOut={(e) => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.color = 'var(--text-main)'; }}
+          >
+            <Icon name="calendar" size={13} style={{ color: linkedEventInfo.color, marginTop: '-6px' }} /> {linkedEventInfo.title} · {linkedEventInfo.date}
+          </span>
+        )}
       </div>
 
       {/* Body */}

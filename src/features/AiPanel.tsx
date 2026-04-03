@@ -91,7 +91,7 @@ export default function AiPanel() {
     if (m === 'note' && data.markdown) {
       setLoadingText('Writing note');
       await createNoteFromAI(data, fid);
-    } else if (m === 'canvas' && data.fabricObjects) {
+    } else if (m === 'canvas' && data.elements) {
       setLoadingText('Drawing canvas');
       await createCanvasFromAI(data, fid);
     } else {
@@ -128,8 +128,8 @@ export default function AiPanel() {
     folder.open = true;
     setHub(newHub);
     saveHub();
-    if (data.fabricObjects) {
-      await saveCanvasData(id, JSON.stringify({ objects: data.fabricObjects }));
+    if (data.elements) {
+      await saveCanvasData(id, { elements: data.elements });
     }
     setActiveFile(id);
     setPanel('files');
