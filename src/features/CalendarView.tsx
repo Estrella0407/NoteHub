@@ -40,6 +40,20 @@ export default function CalendarView() {
     const fc = new FullCalendar.Calendar(containerRef.current, {
       initialView: 'dayGridMonth', height: '100%', headerToolbar: false,
       firstDay: 1, editable: true, selectable: true, dayMaxEvents: true,
+      displayEventTime: false,
+      eventContent(arg: any) {
+        const dot = document.createElement('span');
+        dot.className = 'cal-ev-dot';
+        dot.style.backgroundColor = arg.event.backgroundColor || 'var(--accent)';
+        const title = document.createElement('span');
+        title.className = 'cal-ev-title';
+        title.textContent = arg.event.title;
+        const wrap = document.createElement('div');
+        wrap.className = 'cal-ev-content';
+        wrap.appendChild(dot);
+        wrap.appendChild(title);
+        return { domNodes: [wrap] };
+      },
       events: async (_fi: any, ok: any, fail: any) => {
         try {
           const icalUrl = localStorage.getItem('hub-ical-url') || '';
@@ -146,7 +160,6 @@ export default function CalendarView() {
             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
               {evLinkedNoteId && <button onClick={() => { setModalOpen(false); setActiveFile(evLinkedNoteId); }} style={{ ...btnStyle, color: 'var(--text-main)', borderColor: 'var(--border)', marginRight: 'auto' }}>Open Note</button>}
               {editingId && <button onClick={deleteEvent} style={{ ...btnStyle, color: 'var(--danger, #f7768e)', borderColor: 'var(--danger, #f7768e)' }}>Delete</button>}
-              <button onClick={() => setModalOpen(false)} style={btnStyle}>Cancel</button>
               <button onClick={saveEvent} style={{ ...btnStyle, background: 'var(--accent)', color: 'white', border: 'none' }}>Save</button>
             </div>
           </div>

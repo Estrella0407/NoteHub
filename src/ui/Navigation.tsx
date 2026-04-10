@@ -66,10 +66,6 @@ export default function Navigation() {
       <div className="nav-spacer" />
 
       {/* Help & Settings */}
-      <div className="nav-btn" id="btn-help" onClick={() => setSettingsOpen(true)}>
-        <Icon name="help" size={18} />
-        <div className="nav-tooltip">Help</div>
-      </div>
 
       <div className={`nav-btn ${isSettingsOpen ? 'active' : ''}`} id="btn-settings" onClick={handleSettingsClick}>
         <Icon name="settings" size={18} />

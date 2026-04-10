@@ -239,15 +239,40 @@
   border: none !important;
   font-family: var(--font-mono, 'JetBrains Mono', monospace) !important;
   font-size: 0.68rem !important;
-  padding: 1px 5px !important;
+  padding: 1px 4px !important;
   cursor: pointer;
-  opacity: 0.88;
-  transition: opacity 0.1s, transform 0.1s;
+  background: transparent !important;
+  opacity: 0.92;
+  transition: opacity 0.1s, background 0.1s;
 }
 
 .fc-event:hover {
   opacity: 1;
-  transform: translateY(-1px);
+  background: var(--bg-hover, #1e1b18) !important;
+}
+
+/* Custom event content: dot + title */
+.cal-ev-content {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+}
+
+.cal-ev-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.cal-ev-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text-main, #cec5b8);
+  font-weight: 400;
+  font-size: 0.68rem;
 }
 
 .fc-event-title {
@@ -255,7 +280,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  color: #0d0f14 !important;
+  color: var(--text-main, #cec5b8) !important;
 }
 
 /* "more" link */
