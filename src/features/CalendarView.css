@@ -64,7 +64,7 @@
 .cal-nav-btn:hover {
   background: var(--bg-hover, #1e1b18);
   color: var(--text-main, #cec5b8);
-  border-color: var(--accent, #c8903a);
+  border-color: var(--accent, #5a9a6a);
 }
 
 /* ── View switcher ── */
@@ -94,7 +94,7 @@
 
 .cal-view-btn.active {
   background: var(--bg-active, #252018);
-  color: var(--accent, #c8903a);
+  color: var(--accent, #5a9a6a);
 }
 
 .cal-view-btn:hover:not(.active) {
@@ -116,7 +116,7 @@
   gap: 5px;
   padding: 5px 12px;
   height: 28px;
-  background: var(--accent, #c8903a);
+  background: var(--accent, #5a9a6a);
   border: none;
   border-radius: 5px;
   color: #0f0e0d;
@@ -170,7 +170,7 @@
 /* Root vars passed through */
 .fc {
   --fc-border-color:         var(--border, #2a2520);
-  --fc-today-bg-color:       color-mix(in srgb, var(--accent, #c8903a) 8%, transparent);
+  --fc-today-bg-color:       color-mix(in srgb, var(--accent, #5a9a6a) 8%, transparent);
   --fc-neutral-bg-color:     var(--bg-editor, #111010);
   --fc-list-event-hover-bg:  var(--bg-hover, #1e1b18);
   --fc-page-bg-color:        var(--bg-base, #0f0e0d);
@@ -207,7 +207,7 @@
 
 /* Today highlight */
 .fc .fc-day-today .fc-daygrid-day-number {
-  background: var(--accent, #c8903a);
+  background: var(--accent, #5a9a6a);
   color: #0f0e0d !important;
   border-radius: 50%;
   width: 22px;
@@ -287,7 +287,7 @@
 .fc .fc-daygrid-more-link {
   font-family: var(--font-mono, 'JetBrains Mono', monospace);
   font-size: 0.65rem;
-  color: var(--accent, #c8903a);
+  color: var(--accent, #5a9a6a);
 }
 
 /* Table borders */
@@ -439,7 +439,7 @@
 }
 
 .cal-input:focus {
-  border-color: var(--accent, #c8903a);
+  border-color: var(--accent, #5a9a6a);
 }
 
 .cal-input::placeholder {
@@ -504,7 +504,7 @@
 
 .cal-btn-primary {
   padding: 6px 16px;
-  background: var(--accent, #c8903a);
+  background: var(--accent, #5a9a6a);
   border: none;
   border-radius: 5px;
   color: #0f0e0d;

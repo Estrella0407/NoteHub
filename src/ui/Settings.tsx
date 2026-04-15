@@ -30,7 +30,7 @@ export default function Settings() {
   const setSettingsOpen = useAppStore(state => state.setSettingsOpen);
   const [activeTab, setActiveTab] = useState<SettingsTab>('appearance');
   const [theme, setTheme] = useState(localStorage.getItem('hub-theme') || 'dark');
-  const [accent, setAccent] = useState(localStorage.getItem('hub-accent') || '#c8903a');
+  const [accent, setAccent] = useState(localStorage.getItem('hub-accent') || '#5a9a6a');
   const [fontSize, setFontSize] = useState(localStorage.getItem('hub-font-size') || '13');
   const [profileName, setProfileName] = useState('');
   const [profileEmail, setProfileEmail] = useState('');
